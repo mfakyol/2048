@@ -1,0 +1,57 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #242424;
+  height: 100vh;
+}
+
+.grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--grid-size), var(--cell-size));
+  grid-template-rows: repeat(var(--grid-size), var(--cell-size));
+  background-color: #ccc;
+  gap: var(--cell-gap);
+  padding: var(--cell-gap);
+  border-radius: var(--cell-gap);
+  font-size: 7.5vmin;
+}
+
+.cell {
+  background-color: #aaa;
+  border-radius: 2vmin;
+}
+
+.tile {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  font-weight: 600;
+
+  border-radius: var(--cell-gap);
+  top: calc((var(--y) * var(--cell-size)) + calc(calc(var(--y) + 1) * var(--cell-gap)));
+  left: calc((var(--x) * var(--cell-size)) + calc(calc(var(--x) + 1) * var(--cell-gap)));
+  background-color: hsl(200, 50%, var(--background-lightness));
+  color: hsl(200, 25%, var(--text-lightness));
+  animation: show 200ms ease-in-out;
+  transform: 100ms ease-in-out;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
+  }
+}
