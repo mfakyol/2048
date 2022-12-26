@@ -1,12 +1,19 @@
+import Cell from "./Cell.js";
+
 export default class Grid {
   #cells;
-  constructor(gridElement, CellClass, gridSize, cellSize, cellGap) {
+  constructor(gridElement, gridSize, cellSize, cellGap) {
     gridElement.style.setProperty("--grid-size", gridSize);
     gridElement.style.setProperty("--cell-size", `${cellSize}vmin`);
     gridElement.style.setProperty("--cell-gap", `${cellGap}vmin`);
     gridElement.classList.add("grid");
-    this.#cells = createCells(gridElement, CellClass, gridSize);
+    this.#cells = createCells(gridElement, gridSize);
   }
+
+  get cells() {
+    return this.#cells
+  }
+
 
   get #emptyCells() {
     return this.#cells.filter((cell) => !cell.tile);
@@ -34,10 +41,10 @@ export default class Grid {
   }
 }
 
-function createCells(gridElement, CellClass, gridSize) {
+function createCells(gridElement, gridSize) {
   const cells = [];
   for (let i = 0; i < Math.pow(gridSize, 2); i++) {
-    const cell = new CellClass(i % gridSize, Math.floor(i / gridSize));
+    const cell = new Cell(i % gridSize, Math.floor(i / gridSize));
     cells.push(cell);
     gridElement.append(cell.cellElement);
   }
