@@ -5,8 +5,8 @@
   "main": "Cell.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "set NODE_ENV=production && webpack",
-    "dev": "set NODE_ENV=development && webpack serve"
+    "build": "webpack",
+    "dev": "webpack serve"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +14,7 @@
     "autoprefixer": "^10.4.13",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.3",
+    "dotenv": "^16.0.3",
     "html-webpack-plugin": "^5.5.0",
     "postcss": "^8.4.20",
     "postcss-loader": "^7.0.2",
