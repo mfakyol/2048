@@ -1,3 +1,5 @@
+import { dispatchEvent } from "./Event";
+
 export default class Cell {
   #cellElement;
   #x;
@@ -52,8 +54,7 @@ export default class Cell {
     this.tile.value = this.tile.value + this.mergeTile.value;
     this.mergeTile.remove();
     this.mergeTile = null;
-    const event = new CustomEvent("score", { detail: { type: "add", value: this.tile.value } });
-    window.dispatchEvent(event);
+    dispatchEvent("score", { type: "add", value: this.tile.value });
     return true;
   }
 

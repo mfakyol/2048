@@ -1,4 +1,5 @@
 import "../styles/popup.scss";
+import { dispatchEvent } from "./Event";
 
 function createPopup(title = "", children) {
   const popupOverlay = document.createElement("div");
@@ -95,8 +96,8 @@ export function showScorePopup(newGame) {
   newGameButton.addEventListener("click", (e) => {
     hidePopup();
     newGame();
-    const event = new CustomEvent("score", { detail: { type: "set", value: 0 } });
-    window.dispatchEvent(event);
+
+    dispatchEvent("score", { type: "set", value: 0 });
   });
 
   showPopup();

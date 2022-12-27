@@ -1,5 +1,4 @@
 const scoreElement = document.getElementById("score");
-const scoreWrapperElement = document.getElementById("score-wrapper");
 
 export default function initScore(score) {
   let timeout;
@@ -16,7 +15,7 @@ export default function initScore(score) {
 
       const addedScoreSpan = document.createElement("span");
       addedScoreSpan.textContent = `+${value}`;
-      scoreWrapperElement.appendChild(addedScoreSpan);
+      scoreElement.appendChild(addedScoreSpan);
       addedScoreSpan.classList.add("added-score");
 
       let startX = -20 + Math.random() * 40 + 50;

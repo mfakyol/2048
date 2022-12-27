@@ -28,10 +28,10 @@ body {
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 2vmin 0 1vmin;
+  height: max(8vmin, 64px);
   color: #d0d0d0;
   border-bottom: 2px solid #d0d0d0;
-  overflow: hidden;
+ 
 
   & > .icon-wrapper {
     display: flex;
@@ -51,37 +51,47 @@ body {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    font-size: max(5vmin, 15px);
+    font-size: max(4vmin, 18px);
     margin: 0 auto;
   }
 
   & > .score-wrapper {
-    position: relative;
+
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0 2vmin;
     margin-left: auto;
+    min-width: max(10vmin, 50px);
+
+    & > .score-label {
+ 
+      font-size: max(1.4vmin, 10px);
+    }
 
     & > .score {
+      position: relative;
       font-weight: 600;
       font-size: max(3vmin, 15px);
+      height: max(3vmin, 15px);
 
       &.pop {
         --pop-scale: 1.5;
         animation: pop 100ms ease-in-out alternate;
       }
+
+      & > .added-score {
+        position: absolute;
+        bottom: var(--start-y);
+        left: var(--start-x);
+        transition: 0.3s;
+        animation: addedAnimation 500ms ease-in-out;
+        font-size: max(2vmin, 14px);
+        opacity: 0;
+      }
     }
 
-    & > .added-score {
-      position: absolute;
-      bottom: var(--start-y);
-      left: var(--start-x);
-      transition: 0.3s;
-      animation: addedAnimation 500ms ease-in-out;
-      font-size: max(2vmin, 14px);
-      opacity: 0;
-    }
+
   }
 }
 

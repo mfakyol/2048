@@ -19,6 +19,7 @@
     padding: 24px;
     border-radius: 10px;
     max-width: 90%;
+    border: 1px solid #474747;
     animation: downToTop 0.3s ease-out forwards;
 
     &.closing {
@@ -44,6 +45,7 @@
         padding: 3px;
         cursor: pointer;
         filter: invert(84%) sepia(8%) saturate(0%) hue-rotate(237deg) brightness(99%) contrast(93%);
+        z-index: 1;
       }
     }
 
