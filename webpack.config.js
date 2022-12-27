@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 // const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+dotenv.config({ path: process.cwd() + '/.env', override: true });
 dotenv.config({ path: process.cwd() + '/.env.local', override: true });
 const mode = process.env.NODE_ENV.trim() || "development";
 

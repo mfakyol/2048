@@ -250,10 +250,32 @@ export default function initGame(scoreRef) {
 }
 
 export function newGame() {
-  localStorage.removeItem("currentGame");
-  const streak = localStorage.getItem("streak");
-  const newStreak = (Number(streak) || 1) + 1;
-  localStorage.setItem("streak", newStreak);
-  board.replaceChildren();
-  initGame(score);
+  if (grid) {
+    grid.cells.forEach((cell) => {
+      if (cell.tile) {
+        cell.tile.remove();
+        cell.tile = null;
+      }
+    });
+
+    const cell1 = grid.randomEmptyCell();
+    cell1.tile = new Tile(board);
+    const cell2 = grid.randomEmptyCell();
+    cell2.tile = new Tile(board);
+
+    const newGame = {};
+    newGame.tiles = [];
+    newGame.startDate = Date.now();
+    newGame.tiles.push({ x: cell1.x, y: cell1.y, value: cell1.tile.value });
+    newGame.tiles.push({ x: cell2.x, y: cell2.y, value: cell2.tile.value });
+    newGame.score = 0;
+
+    const streak = localStorage.getItem("streak");
+    const newStreak = (Number(streak) || 1) + 1;
+
+    newGame.streak = newStreak;
+    localStorage.setItem("streak", newStreak);
+
+    localStorage.setItem("currentGame", JSON.stringify(newGame));
+  }
 }
