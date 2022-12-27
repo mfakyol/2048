@@ -43,6 +43,48 @@ export default function initGame(scoreRef) {
 
   function setupInput() {
     window.addEventListener("keydown", handleInput, { once: true });
+
+    board.addEventListener(
+      "touchstart",
+      (e) => {
+        board.addEventListener("touchmove", handleTouchMove, {
+          passive: false,
+        });
+
+        const startX = e.changedTouches[0].pageX;
+        const startY = e.changedTouches[0].pageY;
+        board.addEventListener(
+          "touchend",
+          (e) => {
+            board.removeEventListener("touchmove", handleTouchMove, {
+              passive: false,
+            });
+
+            const endX = e.changedTouches[0].pageX;
+            const endY = e.changedTouches[0].pageY;
+
+            const diffX = endX - startX;
+            const diffY = endY - startY;
+            const absDiffX = Math.abs(diffX);
+            const absDiffY = Math.abs(diffY);
+            if (absDiffX < 50 && absDiffY < 50) return;
+
+            let key;
+
+            if (absDiffX > absDiffY) {
+              if (diffX > 0) key = "d";
+              else key = "a";
+            } else {
+              if (diffY > 0) key = "s";
+              else key = "w";
+            }
+            window.dispatchEvent(new KeyboardEvent("keydown", { key: key }));
+          },
+          { once: true }
+        );
+      },
+      { once: true }
+    );
   }
   async function handleInput(e) {
     switch (e.key) {
@@ -112,7 +154,7 @@ export default function initGame(scoreRef) {
     localStorage.setItem("currentGame", JSON.stringify(currentGame));
 
     if (!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRight()) {
-      newTile.waitForTransition(true).then(() => {
+      newTile.waitForTransition(false).then(() => {
         const event = new CustomEvent("game-over", { detail: {} });
         window.dispatchEvent(event);
       });
@@ -121,6 +163,10 @@ export default function initGame(scoreRef) {
     }
 
     setupInput();
+  }
+
+  function handleTouchMove(e) {
+    e.preventDefault();
   }
 
   function moveUp() {
