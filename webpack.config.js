@@ -1,10 +1,11 @@
 const path = require("path");
 // const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 const mode = process.env.NODE_ENV.trim() || "development";
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: "./src/scripts/index.js",
   output: {
     filename: "bundle.js",
     path: path.resolve(__dirname, "dist"),
@@ -23,6 +24,7 @@ module.exports = {
       inject: "head",
       template: "public/index.html",
     }),
+    new CopyWebpackPlugin({patterns: [{ from: "public/assets", to: "assets" }]}),
     /*new BundleAnalyzerPlugin() */
   ],
   devServer: {

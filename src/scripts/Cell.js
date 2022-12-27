@@ -4,7 +4,7 @@ export default class Cell {
   #y;
   #tile;
   #mergeTile;
- 
+
   constructor(x, y) {
     this.#cellElement = document.createElement("div");
     this.#cellElement.classList.add("cell");
@@ -48,12 +48,13 @@ export default class Cell {
   }
 
   mergeTiles() {
-    if (this.tile == null || this.mergeTile == null) return;
+    if (this.tile == null || this.mergeTile == null) return false;
     this.tile.value = this.tile.value + this.mergeTile.value;
     this.mergeTile.remove();
     this.mergeTile = null;
-    const event = new CustomEvent("score", { detail: {type:"add", value: this.tile.value } });
+    const event = new CustomEvent("score", { detail: { type: "add", value: this.tile.value } });
     window.dispatchEvent(event);
+    return true;
   }
 
   canAccept(tile) {

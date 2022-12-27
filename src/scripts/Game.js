@@ -1,28 +1,27 @@
 import Grid from "./Grid.js";
 import Tile from "./Tile.js";
 
-export default function initGame(score) {
+let grid;
+let board;
+let score;
+
+export default function initGame(scoreRef) {
+  score = scoreRef;
+
   const GRID_SIZE = 4;
   const CELL_SIZE = 100 / (GRID_SIZE + Math.ceil(GRID_SIZE / 10));
   const CELL_GAP = CELL_SIZE / 11;
 
-  const board = document.querySelector("#board");
+  board = document.querySelector("#board");
 
-  const grid = new Grid(board, GRID_SIZE, CELL_SIZE, CELL_GAP);
+  grid = new Grid(board, GRID_SIZE, CELL_SIZE, CELL_GAP);
   let currentGame = JSON.parse(localStorage.getItem("currentGame"));
-  const today = new Date();
-  const date = new Date(currentGame?.startDate);
 
-  const isSameDay =
-    today.getFullYear() == date.getFullYear() &&
-    today.getMonth() == date.getMonth() &&
-    today.getDate() == date.getDate();
-
-  if (currentGame && isSameDay) {
-    currentGame.tiles.forEach((tile) => {
+  if (currentGame) {
+    currentGame?.tiles?.forEach((tile) => {
       grid.cellsByColumn[tile.x][tile.y].tile = new Tile(board, tile.value);
     });
-    score.value = currentGame.score
+    score.value = currentGame.score;
   } else {
     const cell1 = grid.randomEmptyCell();
     cell1.tile = new Tile(board);
@@ -35,6 +34,7 @@ export default function initGame(score) {
     newGame.tiles.push({ x: cell1.x, y: cell1.y, value: cell1.tile.value });
     newGame.tiles.push({ x: cell2.x, y: cell2.y, value: cell2.tile.value });
     newGame.score = 0;
+    newGame.streak = localStorage.getItem("streak") || 1;
 
     localStorage.setItem("currentGame", JSON.stringify(newGame));
   }
@@ -47,6 +47,7 @@ export default function initGame(score) {
   async function handleInput(e) {
     switch (e.key) {
       case "ArrowUp":
+      case "w":
         if (!canMoveUp()) {
           setupInput();
           return;
@@ -54,6 +55,7 @@ export default function initGame(score) {
         await moveUp();
         break;
       case "ArrowDown":
+      case "s":
         if (!canMoveDown()) {
           setupInput();
           return;
@@ -61,6 +63,7 @@ export default function initGame(score) {
         await moveDown();
         break;
       case "ArrowLeft":
+      case "a":
         if (!canMoveLeft()) {
           setupInput();
           return;
@@ -68,6 +71,7 @@ export default function initGame(score) {
         await moveLeft();
         break;
       case "ArrowRight":
+      case "d":
         if (!canMoveRight()) {
           setupInput();
           return;
@@ -84,10 +88,12 @@ export default function initGame(score) {
     const newTile = new Tile(board);
     grid.randomEmptyCell().tile = newTile;
 
+    let tempLargestTile = 0;
     const currentGame = JSON.parse(localStorage.getItem("currentGame")) || {};
     currentGame.tiles = grid.cells
       .filter((cell) => cell.tile)
       .map((cell) => {
+        if (cell.tile.value > tempLargestTile) tempLargestTile = cell.tile.value;
         return {
           x: cell.x,
           y: cell.y,
@@ -96,17 +102,21 @@ export default function initGame(score) {
       });
 
     if (!currentGame.startDate) currentGame.startDate = Date.now();
+    const bestScore = localStorage.getItem("bestScore") || 0;
+    if (score.value > bestScore) localStorage.setItem("bestScore", score.value);
     currentGame.score = score.value;
+    currentGame.largestTile = tempLargestTile;
+    const largestTile = localStorage.getItem("largestTile") || 0;
+    if (tempLargestTile > largestTile) localStorage.setItem("largestTile", tempLargestTile);
 
     localStorage.setItem("currentGame", JSON.stringify(currentGame));
 
     if (!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRight()) {
       newTile.waitForTransition(true).then(() => {
-        const date = Date.now();
-        const score = score;
+        const event = new CustomEvent("game-over", { detail: {} });
+        window.dispatchEvent(event);
       });
-      const event = CustomEvent("game-over");
-      window.dispatchEvent(event);
+
       return;
     }
 
@@ -191,6 +201,13 @@ export default function initGame(score) {
       });
     });
   }
+}
 
-  window.addEventListener("score", (e) => console.log(e));
+export function newGame() {
+  localStorage.removeItem("currentGame");
+  const streak = localStorage.getItem("streak");
+  const newStreak = (Number(streak) || 1) + 1;
+  localStorage.setItem("streak", newStreak);
+  board.replaceChildren();
+  initGame(score);
 }
